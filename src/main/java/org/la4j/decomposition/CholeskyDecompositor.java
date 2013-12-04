@@ -127,7 +127,7 @@ public class CholeskyDecompositor extends AbstractDecompositor implements Matrix
 
                 d = matrix.get(j, j) - d;
 
-                if (d > 0.0)
+                if (d <= 0.0)
                     return false;
 
                 l.set(j, j, Math.sqrt(Math.max(d, 0.0)));
