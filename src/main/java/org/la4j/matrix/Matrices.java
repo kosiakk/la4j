@@ -24,6 +24,7 @@
 package org.la4j.matrix;
 
 import org.la4j.LinearAlgebra;
+import org.la4j.decomposition.CholeskyDecompositor;
 import org.la4j.io.MatrixMarketStream;
 import org.la4j.io.SymbolSeparatedStream;
 import org.la4j.matrix.functor.AdvancedMatrixPredicate;
@@ -500,12 +501,20 @@ public final class Matrices {
             new TridiagonalMatrixPredicate();
 
     /**
-     * Checks whether the matrix is a 
+     * Checks whether all elements of the matrix are greater than zero
      * <a href="http://mathworld.wolfram.com/PositiveMatrix.html">positive 
      * matrix</a>.
      */
     public static final MatrixPredicate POSITIVE_MATRIX = 
             new PositiveMatrixPredicate();
+
+    /**
+     * Checks whether the matrix is Positive Definite
+     * <a href="http://mathworld.wolfram.com/PositiveDefiniteMatrix.html">positive
+     * matrix</a>.
+     */
+    public static final AdvancedMatrixPredicate POSITIVE_DEFINITE_MATRIX =
+            new CholeskyDecompositor.PositiveDefinitePredicate();
 
     /**
      * Checks whether the matrix is a 

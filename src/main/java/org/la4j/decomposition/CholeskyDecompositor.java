@@ -24,6 +24,7 @@ package org.la4j.decomposition;
 import org.la4j.factory.Factory;
 import org.la4j.matrix.Matrices;
 import org.la4j.matrix.Matrix;
+import org.la4j.matrix.functor.AdvancedMatrixPredicate;
 import org.la4j.vector.Vector;
 
 /**
@@ -45,7 +46,7 @@ public class CholeskyDecompositor extends AbstractDecompositor implements Matrix
      * http://mathworld.wolfram.com/CholeskyDecomposition.html</a> for more
      * details.
      * </p>
-     * 
+     *
      * @param factory
      * @return { L }
      */
@@ -92,61 +93,58 @@ public class CholeskyDecompositor extends AbstractDecompositor implements Matrix
      * http://mathworld.wolfram.com/PositiveDefiniteMatrix.html</a> for more
      * details.
      * </p>
-     * 
-     * @param matrix
-     * @return <code>true</code> if matrix is positive definite
+     *
      */
-    private boolean isPositiveDefinite(Matrix matrix) {
+    public static class PositiveDefinitePredicate implements AdvancedMatrixPredicate {
+        /** @return <code>true</code> if matrix is positive definite */
+        public boolean test(Matrix matrix) {
 
-        //
-        // TODO: Issue 12
-        //
+            int n = matrix.rows();
 
-        int n = matrix.rows();
-        boolean result = true;
+            Matrix l = matrix.blank();
 
-        Matrix l = matrix.blank();
+            for (int j = 0; j < n; j++) {
 
-        for (int j = 0; j < n; j++) {
+                Vector rowj = l.getRow(j);
 
-            Vector rowj = l.getRow(j);
+                double d = 0.0;
+                for (int k = 0; k < j; k++) {
 
-            double d = 0.0;
-            for (int k = 0; k < j; k++) {
+                    Vector rowk = l.getRow(k);
+                    double s = 0.0;
 
-                Vector rowk = l.getRow(k);
-                double s = 0.0;
+                    for (int i = 0; i < k; i++) {
+                        s += rowk.get(i) * rowj.get(i);
+                    }
 
-                for (int i = 0; i < k; i++) {
-                    s += rowk.get(i) * rowj.get(i);
+                    s = (matrix.get(j, k) - s) / l.get(k, k);
+
+                    rowj.set(k, s);
+                    l.setRow(j, rowj);
+
+                    d = d + s * s;
                 }
 
-                s = (matrix.get(j, k) - s) / l.get(k, k);
+                d = matrix.get(j, j) - d;
 
-                rowj.set(k, s);
-                l.setRow(j, rowj);
+                if (d > 0.0)
+                    return false;
 
-                d = d + s * s;
+                l.set(j, j, Math.sqrt(Math.max(d, 0.0)));
+
+                for (int k = j + 1; k < n; k++) {
+                    l.set(j, k, 0.0);
+                }
             }
 
-            d = matrix.get(j, j) - d;
-
-            result = result && (d > 0.0);
-
-            l.set(j, j, Math.sqrt(Math.max(d, 0.0)));
-
-            for (int k = j + 1; k < n; k++) {
-                l.set(j, k, 0.0);
-            }
+            return true;
         }
-
-        return result;
     }
 
     @Override
     public boolean applicableTo(Matrix matrix) {
         return matrix.rows() == matrix.columns() &&
                matrix.is(Matrices.SYMMETRIC_MATRIX) &&
-               isPositiveDefinite(matrix);
+               matrix.is(Matrices.POSITIVE_DEFINITE_MATRIX);
     }
 }
