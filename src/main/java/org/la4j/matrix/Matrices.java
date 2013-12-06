@@ -251,7 +251,7 @@ public final class Matrices {
         }
     }
 
-    private static class InvMatrixFunction 
+    private static class NegateMatrixFunction
             implements MatrixFunction {
         @Override
         public double evaluate(int i, int j, double value) {
@@ -580,10 +580,19 @@ public final class Matrices {
             new DecMatrixFunction();
 
     /**
-     * Inverts each element of matrix.  
+     * Negates each element of matrix.
+     *
+     * @deprecated use NEGATE_FUNCTION
      */
-    public static final MatrixFunction INV_FUNCTION = 
-            new InvMatrixFunction();
+    @Deprecated
+    public static final MatrixFunction INV_FUNCTION =
+            new NegateMatrixFunction();
+
+    /**
+     * Negates each element of matrix.
+     */
+    public static final MatrixFunction NEGATE_FUNCTION =
+            new NegateMatrixFunction();
 
     /**
      * Creates a singleton <code>1x1</code> matrix from <code>value</code>.

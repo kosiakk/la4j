@@ -573,7 +573,7 @@ public class EigenDecompositor extends AbstractDecompositor implements MatrixDec
                         if (k != m) {
                             H.set(k, k - 1, -s * x);
                         } else if (l != m) {
-                            H.update(k, k - 1, Matrices.INV_FUNCTION);
+                            H.update(k, k - 1, Matrices.NEGATE_FUNCTION);
                         }
                         p = p + s;
                         x = p / s;

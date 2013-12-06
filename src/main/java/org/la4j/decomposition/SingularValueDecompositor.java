@@ -82,7 +82,7 @@ public class SingularValueDecompositor extends AbstractDecompositor implements M
                 if (Math.abs(s.get(k, k)) > Matrices.EPS) {
 
                     if (a.get(k, k) < 0.0) {
-                        s.update(k, k, Matrices.INV_FUNCTION);
+                        s.update(k, k, Matrices.NEGATE_FUNCTION);
                     }
 
                     double skk = s.get(k, k);
@@ -93,7 +93,7 @@ public class SingularValueDecompositor extends AbstractDecompositor implements M
                     a.update(k, k, Matrices.INC_FUNCTION);
                 }
 
-                s.update(k, k, Matrices.INV_FUNCTION);
+                s.update(k, k, Matrices.NEGATE_FUNCTION);
             }
 
             for (int j = k + 1; j < a.columns(); j++) {
@@ -223,7 +223,7 @@ public class SingularValueDecompositor extends AbstractDecompositor implements M
                 }
 
                 for (int i = k; i < a.rows(); i++) {
-                    u.update(i, k, Matrices.INV_FUNCTION);
+                    u.update(i, k, Matrices.NEGATE_FUNCTION);
                 }
 
                 u.update(k, k, Matrices.INC_FUNCTION);
@@ -470,7 +470,7 @@ public class SingularValueDecompositor extends AbstractDecompositor implements M
                 if (s.get(k, k) <= 0.0) {
                     s.set(k, k, s.get(k, k) < 0.0 ? -s.get(k, k) : 0.0);
                     for (int i = 0; i <= pp; i++) {
-                        v.update(i,  k, Matrices.INV_FUNCTION);
+                        v.update(i,  k, Matrices.NEGATE_FUNCTION);
                     }
                 }
 
